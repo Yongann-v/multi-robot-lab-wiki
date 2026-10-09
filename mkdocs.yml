@@ -1,8 +1,8 @@
 site_name: Multi-Robot Lab Wiki
 site_description: "How-tos and tutorials for the multi-robot lab: robots, simulation and software"
-site_url: https://yongann-v.github.io/lab-wiki/
-repo_url: https://github.com/Yongann-v/lab-wiki
-repo_name: Yongann-v/lab-wiki
+site_url: https://yongann-v.github.io/multi-robot-lab-wiki/
+repo_url: https://github.com/Yongann-v/multi-robot-lab-wiki
+repo_name: Yongann-v/multi-robot-lab-wiki
 edit_uri: edit/main/docs/
 
 nav:
