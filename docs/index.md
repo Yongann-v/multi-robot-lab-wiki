@@ -1,6 +1,6 @@
-# Lab Wiki
+# Multi-Robot Lab Wiki
 
-How-tos and tutorials for the lab's robots and software. Each page says which repo it belongs to and what you need before you start.
+How-tos and tutorials for the multi-robot lab: our robots, simulation and software. Each page says which repo it belongs to and what you need before you start.
 
 ## Tutorials
 
