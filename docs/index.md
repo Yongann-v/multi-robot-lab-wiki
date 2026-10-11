@@ -7,6 +7,7 @@ How-tos and tutorials for the multi-robot lab: our robots, simulation and softwa
 | Project | Tutorial | What you end with |
 | --- | --- | --- |
 | [mrs_ws](https://github.com/GSU-CARL/mrs_ws): Warthog + Husky inspection | [Run the two-robot simulation](mrs_ws/run-simulation.md) | Both robots spawned in Gazebo and driving from the command line |
+| [mrs_ws](https://github.com/GSU-CARL/mrs_ws): Warthog + Husky inspection | [Map the site with both robots](mrs_ws/slam-and-map-merge.md) | SLAM on each robot and one merged team map in RViz |
 
 ## Contributing
 
