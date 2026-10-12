@@ -75,18 +75,18 @@ Right after startup each robot has mapped only what it sees from its start pose,
 
 ## 4. Drive and watch the map grow (terminals 3 and 4)
 
-Drive each robot with the keyboard. Clearpath robots take `TwistStamped` on `/<ns>/cmd_vel`, hence `stamped:=true`:
+Drive each robot with the keyboard. Clearpath robots take `TwistStamped` on `/<ns>/cmd_vel`, hence `stamped:=true`. `use_sim_time:=true` stamps each command with the sim clock: with the default wall-clock stamps the robot controller never sees a command as old, so the robot keeps driving after you release a key.
 
 ```bash
 # terminal 3: Warthog
 docker exec -it mrs_sim bash -c 'source install/setup.bash && \
   ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args \
-  -r cmd_vel:=/w200_0111/cmd_vel -p stamped:=true -p frame_id:=base_link'
+  -r cmd_vel:=/w200_0111/cmd_vel -p stamped:=true -p frame_id:=base_link -p use_sim_time:=true'
 
 # terminal 4: Husky
 docker exec -it mrs_sim bash -c 'source install/setup.bash && \
   ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args \
-  -r cmd_vel:=/a200_1103/cmd_vel -p stamped:=true -p frame_id:=base_link'
+  -r cmd_vel:=/a200_1103/cmd_vel -p stamped:=true -p frame_id:=base_link -p use_sim_time:=true'
 ```
 
 Keys: `i` forward, `j`/`l` turn, `k` stop, `z` slower. Drive at or below 0.5 m/s. Each robot's collision monitor slows and stops it before it touches an obstacle; reverse or turn away to continue.
@@ -148,7 +148,8 @@ Press Ctrl+C in terminal 1, or run `docker rm -f mrs_sim`. RViz and the teleop t
 | `/map` exists but stays grey | The merger has no robot maps yet. Check `ros2 topic list | grep /map`, which should list `/map`, `/w200_0111/map` and `/a200_1103/map`. |
 | `ros2 topic echo /map` prints nothing | Maps are latched (transient local, reliable). Add `--qos-durability transient_local --qos-reliability reliable`. |
 | RViz shows `Frame [map] does not exist` | The merger starts with the sim and publishes `map -> <ns>/map` at once. Check that `use_sim_time:=true` was passed to RViz. |
-| The robot does not move with teleop | You forgot `-p stamped:=true`: Clearpath's twist_mux ignores plain `Twist`. Or the collision monitor is not running: `cmd_vel` only reaches the robot through it (as `cmd_vel_safe`). Check `ros2 lifecycle get /<ns>/collision_monitor`. Or the robot is already at an obstacle: drive away from it. |
+| The robot does not move with teleop | You forgot `-p stamped:=true`: Clearpath's twist_mux ignores plain `Twist`. Or the collision monitor is not running: `cmd_vel` only reaches the robot through it (as `cmd_vel_safe`). Check `ros2 lifecycle get /<ns>/collision_monitor`. Or the robot is already at an obstacle: reverse or drive away from it; driving toward it or turning in place there is blocked. |
+| The robot keeps moving after you release the key | Teleop was started without `-p use_sim_time:=true`. Its commands then carry wall-clock stamps far ahead of the sim clock, so the controller's 0.25-0.5 s command timeout never fires and the last command is held. Press `k` to stop, restart teleop with `use_sim_time:=true`. |
 | Robot maps line up badly in `/map` | A `spawn` pose in fleet.yaml does not match where the robot actually started. |
 
 ## Where things live (in mrs_ws)
