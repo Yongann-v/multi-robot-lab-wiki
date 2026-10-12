@@ -89,7 +89,7 @@ docker exec -it mrs_sim bash -c 'source install/setup.bash && \
   -r cmd_vel:=/a200_1103/cmd_vel -p stamped:=true -p frame_id:=base_link'
 ```
 
-Keys: `i` forward, `j`/`l` turn, `k` stop, `z` slower. Drive at or below 0.5 m/s and turn slowly (see Troubleshooting).
+Keys: `i` forward, `j`/`l` turn, `k` stop, `z` slower. Drive at or below 0.5 m/s. Each robot's collision monitor slows and stops it before it touches an obstacle; reverse or turn away to continue.
 
 A route that covers the site without the robots meeting:
 
@@ -143,12 +143,12 @@ Press Ctrl+C in terminal 1, or run `docker rm -f mrs_sim`. RViz and the teleop t
 
 | Symptom | Cause and fix |
 | --- | --- |
-| A rotated "ghost" copy of the arena appears in a robot's map | SLAM lost its heading during a fast turn. Sim wheel odometry drifts a lot, especially on the skid-steer Warthog, and slam_toolbox only adds a scan every 0.5 rad of turning. Drive slower and turn slower; restart the sim to clear the map. Tuning is tracked in the Stage 1 plan. |
+| A rotated "ghost" copy of the arena, or a shifted copy, appears in a robot's map | The odometry under SLAM was wrong. Skid-steer wheels slip in turns and when pushing against an obstacle, so wheel odometry heading and distance drift. The Warthog's sim EKF takes heading from its IMU, and the collision monitor stops robots before contact. If you still see it, check `ros2 lifecycle get /<ns>/collision_monitor` (should be `active`) and that you are not driving with the joystick, which bypasses the monitor. Restart the sim to clear the map. `ros2 run mrs_sim heading_check` measures the drift against Gazebo truth (see `src/mrs_sim/README.md`). |
 | `/<ns>/map` never appears | SLAM gets no scans or no TF. Check `ros2 topic hz /<ns>/scan` (about 10-15 Hz) and the terminal 1 log for `Message Filter dropping message`. A few at startup are normal. |
 | `/map` exists but stays grey | The merger has no robot maps yet. Check `ros2 topic list | grep /map`, which should list `/map`, `/w200_0111/map` and `/a200_1103/map`. |
 | `ros2 topic echo /map` prints nothing | Maps are latched (transient local, reliable). Add `--qos-durability transient_local --qos-reliability reliable`. |
 | RViz shows `Frame [map] does not exist` | The merger starts with the sim and publishes `map -> <ns>/map` at once. Check that `use_sim_time:=true` was passed to RViz. |
-| The robot does not move with teleop | You forgot `-p stamped:=true`. Clearpath's twist_mux ignores plain `Twist`. |
+| The robot does not move with teleop | You forgot `-p stamped:=true`: Clearpath's twist_mux ignores plain `Twist`. Or the collision monitor is not running: `cmd_vel` only reaches the robot through it (as `cmd_vel_safe`). Check `ros2 lifecycle get /<ns>/collision_monitor`. Or the robot is already at an obstacle: drive away from it. |
 | Robot maps line up badly in `/map` | A `spawn` pose in fleet.yaml does not match where the robot actually started. |
 
 ## Where things live (in mrs_ws)
@@ -160,4 +160,5 @@ Press Ctrl+C in terminal 1, or run `docker rm -f mrs_sim`. RViz and the teleop t
 | `src/mrs_slam/config/pointcloud_to_laserscan.yaml` | Height band and range of the planar scan |
 | `src/mrs_slam/mrs_slam/map_merger.py`, `merge.py` | Team map merger and its grid math ([details](https://github.com/GSU-CARL/mrs_ws/blob/main/src/mrs_slam/README.md)) |
 | `src/mrs_description/config/fleet.yaml` | Start poses used by the merger |
+| `src/mrs_navigation/config/collision_monitor.yaml`, `footprint_<platform>.yaml` | Collision monitor between `cmd_vel` and the robot |
 | `src/mrs_bringup/rviz/team_slam.rviz` | The RViz view used here |
