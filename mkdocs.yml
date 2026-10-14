@@ -10,6 +10,7 @@ nav:
   - mrs_ws (Warthog + Husky):
       - Run the simulation: mrs_ws/run-simulation.md
       - Map the site (SLAM + map merge): mrs_ws/slam-and-map-merge.md
+      - Send the robots to goals (Nav2): mrs_ws/navigation.md
 
 theme:
   name: material

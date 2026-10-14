@@ -46,6 +46,7 @@ xhost +local:docker   # let the container open windows on your display
 docker run -it --rm --name mrs_sim --net=host --ipc=host \
   -u $(id -u):$(id -g) -e HOME=/tmp/h \
   -e DISPLAY=$DISPLAY -e LIBGL_ALWAYS_SOFTWARE=1 -e ROS_DOMAIN_ID=42 \
+  -e RMW_IMPLEMENTATION=rmw_zenoh_cpp \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v ~/mrs_ws:/ws -w /ws mrs_ws:dev \
   bash -c 'source install/setup.bash && ros2 launch mrs_bringup multi_sim.launch.py'
@@ -58,6 +59,7 @@ What the flags do:
 | Flag | Why |
 | --- | --- |
 | `-e ROS_DOMAIN_ID=42` | `--net=host` puts sim topics on the lab network. The real robots use domain 0, so this keeps sim commands from reaching a powered-on robot with the same namespace. |
+| `-e RMW_IMPLEMENTATION=rmw_zenoh_cpp` | The sim runs on Zenoh: `multi_sim.launch.py` starts the Zenoh router and every node uses it. Set on the container so that `docker exec` terminals (ros2 CLI, RViz, teleop) use Zenoh too; without it they see no topics. On Fast DDS, startup sometimes hung one robot's SLAM, collision monitor or Nav2. |
 | `-e LIBGL_ALWAYS_SOFTWARE=1` | CPU rendering. Needed while the NVIDIA driver/library versions on the host mismatch (`nvidia-smi` fails). Drop it once `nvidia-smi` works. |
 | `-u $(id -u):$(id -g) -e HOME=/tmp/h` | Files the container writes stay owned by you. Generated robot files go to `/tmp/h/.ros/mrs/<robot_id>/` inside the container. |
 | `--name mrs_sim` | Lets terminal 2 attach with `docker exec`. |
@@ -70,6 +72,7 @@ Launch arguments (append to the `ros2 launch` line):
 | `world:=<name>` | `mrs_test_site` | Another world in `mrs_sim/worlds/` |
 | `fleet:=<path>` | `mrs_description/config/fleet.yaml` | A different robot list |
 | `spawn_period:=<s>` | `5.0` | Seconds between robot spawns |
+| `rmw:=<rmw>` | `rmw_zenoh_cpp` | Middleware for everything the launch starts. Match it with `RMW_IMPLEMENTATION` in your other terminals |
 
 ## 3. Check and drive (terminal 2)
 

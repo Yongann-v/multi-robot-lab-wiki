@@ -42,6 +42,7 @@ xhost +local:docker
 docker run -it --rm --name mrs_sim --net=host --ipc=host \
   -u $(id -u):$(id -g) -e HOME=/tmp/h \
   -e DISPLAY=$DISPLAY -e LIBGL_ALWAYS_SOFTWARE=1 -e ROS_DOMAIN_ID=42 \
+  -e RMW_IMPLEMENTATION=rmw_zenoh_cpp \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v ~/mrs_ws:/ws -w /ws mrs_ws:dev \
   bash -c 'source install/setup.bash && ros2 launch mrs_bringup multi_sim.launch.py'
