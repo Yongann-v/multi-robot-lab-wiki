@@ -19,7 +19,7 @@ Time: about 10 min. Do [Run the two-robot simulation](run-simulation.md) first: 
 
 Team TF tree: `map` -> `<ns>/map` -> `<ns>/odom` -> `<ns>/base_link`.
 
-The start poses are the `spawn` entries in `src/mrs_description/config/fleet.yaml`: Warthog at (0, 0), Husky at (0, 3), both facing +x. The merger places each robot's map at its start pose, so the two maps line up without any matching step. On site, the robots must start at the poses listed there.
+The start poses are the `spawn` entries in `src/mrs_description/config/fleet.yaml`: Warthog at (0, 0) in the open arena facing +x, Husky at (27, 1.5) at the east end of the indoor corridor facing -x (back toward the door). The merger places each robot's map at its start pose, so the two maps line up without any matching step. On site, the robots must start at the poses listed there.
 
 ## 1. Rebuild the image and the workspace
 

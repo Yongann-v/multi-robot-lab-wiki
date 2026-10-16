@@ -77,18 +77,18 @@ The toolbar has two **2D Goal Pose** buttons: the first sends to the Warthog (`/
 
 Try:
 
-- **Husky:** into the corridor, e.g. x = 15, y = 1.5. It drives east and through the 3 m door at x = 10.
+- **Husky:** along the corridor, e.g. x = 15, y = 1.5. It drives 12 m west from its start at the east end.
 - **Warthog:** across the arena, e.g. x = -5, y = 10.
 
 Terminal 1 shows the relay's progress:
 
 ```text
-[goal_relay]: a200_1103: goal (15.00, 1.50) in map -> (15.00, -1.50, yaw 0.00) in its map
-[goal_relay]: a200_1103: 6.2 m to go, 0 recoveries
+[goal_relay]: a200_1103: goal (15.00, 1.50) in map -> (12.00, 0.00, yaw -3.14) in its map
+[goal_relay]: a200_1103: 8.4 m to go, 0 recoveries
 [goal_relay]: a200_1103: goal succeeded
 ```
 
-The Husky started at (0, 3), so team (15, 1.5) is (15, -1.5) in its own map.
+The Husky started at (27, 1.5) facing west, so team (15, 1.5) is 12 m straight ahead, (12, 0), in its own map, and a goal facing east (yaw 0 in the team map) is yaw -3.14 in its map.
 
 A new goal for a robot replaces its current one. The Warthog (1.52 m x 1.42 m) does not fit through the 1.2 m doorways into the rooms, so goals inside the rooms fail to plan for it.
 

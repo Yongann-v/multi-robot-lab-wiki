@@ -15,7 +15,7 @@ Time: about 20 min the first time (mostly the image download), under 1 min after
 | Robot | Namespace | Spawn (x, y) | Role |
 | --- | --- | --- | --- |
 | Warthog W200 | `w200_0111` | (0, 0) | scout |
-| Husky A200 | `a200_1103` | (0, 3) | inspector |
+| Husky A200 | `a200_1103` | (27, 1.5), facing -x (corridor end) | inspector |
 
 ## 1. One-time setup
 
